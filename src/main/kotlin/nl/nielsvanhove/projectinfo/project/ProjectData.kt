@@ -1,10 +1,10 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.projectinfo.project
 
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import java.lang.System.exit
+import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
 
 
 class ProjectData(var commits: JsonArray) {
@@ -44,7 +44,7 @@ class ProjectData(var commits: JsonArray) {
     }
 
     fun newJsonObject(annotatedCommit: AnnotatedCommit): JsonObject {
-        val map = mutableMapOf<String, JsonPrimitive>()
+        val map = mutableMapOf<String, JsonElement>()
         map["commitHash"] = JsonPrimitive(annotatedCommit.commitHash)
         map["committerDate"] = JsonPrimitive(annotatedCommit.committerDate.toString())
         map["isFirstCommit"] = JsonPrimitive(annotatedCommit.isFirstCommit)
@@ -52,6 +52,7 @@ class ProjectData(var commits: JsonArray) {
         map["isLastOfYear"] = JsonPrimitive(annotatedCommit.lastOfYear)
         map["isLastOfQuarter"] = JsonPrimitive(annotatedCommit.lastOfQuarter)
         map["isLastOfMonth"] = JsonPrimitive(annotatedCommit.lastOfMonth)
+        map["measurements"] = JsonObject(emptyMap())
         return JsonObject(content = map)
     }
 

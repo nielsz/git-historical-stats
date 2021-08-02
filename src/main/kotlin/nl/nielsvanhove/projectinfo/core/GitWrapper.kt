@@ -1,12 +1,13 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.projectinfo.core
 
+import nl.nielsvanhove.projectinfo.project.ProjectConfig
 import java.time.OffsetDateTime
-import kotlin.system.exitProcess
 
 class GitWrapper(private val projectConfig: ProjectConfig, private val commandExecutor: CommandExecutor) {
 
     fun log(): List<LogItem> {
-        val command = listOf("git", "log", projectConfig.branch, "--oneline", "--pretty=format:%h %cI %ae")
+        val c = "git log ${projectConfig.branch} --oneline --pretty=format:\"%h %cI %an\""
+        val command = listOf("bash", "-c") + listOf(c)
         val commits = commandExecutor.execute(command)
             .lines()
             .map { logLine ->
@@ -22,7 +23,6 @@ class GitWrapper(private val projectConfig: ProjectConfig, private val commandEx
     }
 
     fun checkout(hash: String) {
-        println("checking out $hash")
         commandExecutor.execute(listOf("git", "checkout", hash))
         commandExecutor.execute(listOf("git", "clean", "-fd"))
 

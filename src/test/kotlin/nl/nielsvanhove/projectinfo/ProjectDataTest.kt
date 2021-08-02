@@ -1,6 +1,8 @@
 package nl.nielsvanhove.projectinfo
 
 import kotlinx.serialization.json.*
+import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
+import nl.nielsvanhove.projectinfo.project.ProjectData
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
@@ -9,10 +11,9 @@ import java.time.OffsetDateTime
 class ProjectDataTest {
 
     @Test
-    fun `When no initial commits and no new commits, Then the list will be empty`() {
+    fun `Given no initial commits and no new commits, When Syncing, Then the list will be empty`() {
 
         // Given
-        //val commits = JsonArray(listOf(projectDataCommit("a"), projectDataCommit("b")))
         val commits = JsonArray(emptyList())
         val projectData = ProjectData(commits = commits)
 
@@ -24,7 +25,7 @@ class ProjectDataTest {
     }
 
     @Test
-    fun `When two initial commits and no new commits, Then the list will be empty`() {
+    fun `Given two initial commits and no new commits, When Syncing, Then the list will be empty`() {
 
         // Given
         val commits = JsonArray(listOf(projectDataCommit("a"), projectDataCommit("b")))
@@ -38,7 +39,7 @@ class ProjectDataTest {
     }
 
     @Test
-    fun `When no initial commits and two new commits, Then the list will the two new items`() {
+    fun `Given no initial commits and two new commits, When Syncing, Then the list will the two new items`() {
 
         // Given
         val commits = JsonArray(emptyList())
@@ -54,7 +55,7 @@ class ProjectDataTest {
     }
 
     @Test
-    fun `When there is one initial commits with custom data, Then the list will retain that custom data`() {
+    fun `Given there is one initial commits with custom data, When Syncing, Then the list will retain that custom data`() {
         val content = mutableMapOf<String, JsonElement>()
         content["commitHash"] = JsonPrimitive("q")
         content["committerDate"] = JsonPrimitive(OffsetDateTime.now().toString())
@@ -95,7 +96,6 @@ class ProjectDataTest {
     private fun projectDataCommit(hash: String): JsonObject {
         val content = mutableMapOf<String, JsonPrimitive>()
         content["commitHash"] = JsonPrimitive(hash)
-        val jsonObject = JsonObject(content = content)
-        return jsonObject
+        return JsonObject(content = content)
     }
 }

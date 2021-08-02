@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.projectinfo.model
 
 import java.time.OffsetDateTime
 

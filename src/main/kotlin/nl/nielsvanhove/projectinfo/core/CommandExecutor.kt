@@ -1,12 +1,13 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.projectinfo.core
 
+import nl.nielsvanhove.projectinfo.project.ProjectConfig
 import java.io.File
 import java.io.IOException
 
 class CommandExecutor(val projectConfig: ProjectConfig) {
 
     @Throws(IOException::class)
-    fun execute(command: List<String>, directory: File = projectConfig.repo): String {
+    fun execute(command: List<String>, directory: File = projectConfig.repo, printError: Boolean = false): String {
 
         println("executing ${command.joinToString(" ")}")
         val process = ProcessBuilder(command)
@@ -15,7 +16,9 @@ class CommandExecutor(val projectConfig: ProjectConfig) {
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
 
-        print(process.errorStream.bufferedReader().readText())
+        if (printError) {
+            println("Error: " + process.errorStream.bufferedReader().readText())
+        }
 
         return process.inputStream.bufferedReader().readText()
     }

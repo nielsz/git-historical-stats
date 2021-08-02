@@ -1,5 +1,6 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.projectinfo.core
 
+import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
 import java.time.temporal.IsoFields
 
 /**
