@@ -2,84 +2,58 @@ package nl.nielsvanhove.projectinfo
 
 import com.github.sh0nk.matplotlib4j.Plot
 import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import nl.nielsvanhove.projectinfo.core.CommandExecutor
+import nl.nielsvanhove.projectinfo.core.GitWrapper
+import nl.nielsvanhove.projectinfo.core.ImportantCommitFilter
+import nl.nielsvanhove.projectinfo.measurements.MeasurementExecutor
+import nl.nielsvanhove.projectinfo.project.ProjectConfig
+import nl.nielsvanhove.projectinfo.project.ProjectConfigReader
+import nl.nielsvanhove.projectinfo.project.ProjectDataReaderWriter
 import java.util.*
 import kotlin.system.exitProcess
 
 
 fun main(args: Array<String>) {
-    println("Hello World! " + args.joinToString(", "))
 
     val arguments = ArgParser(args).parseInto(::MyArgs)
+
+    println("runAllMeasurements: " + arguments.runAllMeasurements)
 
     val projectConfig = ProjectConfigReader.read(arguments.project)
     val commandExecutor = CommandExecutor(projectConfig)
     val gitWrapper = GitWrapper(projectConfig, commandExecutor)
 
-    //syncCommits(projectConfig, gitWrapper)
-    executeMeasurements(projectConfig, commandExecutor, gitWrapper)
+    syncCommits(projectConfig, gitWrapper)
+    executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments.runAllMeasurements)
 }
 
-fun executeMeasurements(projectConfig: ProjectConfig, commandExecutor: CommandExecutor, gitWrapper: GitWrapper) {
-    val projectData = ProjectDataReader.read(projectConfig.name)
+fun executeMeasurements(
+    projectConfig: ProjectConfig,
+    commandExecutor: CommandExecutor,
+    gitWrapper: GitWrapper,
+    runAllMeasurements: Boolean
+) {
+    val projectData = ProjectDataReaderWriter.read(projectConfig.name)
     val measurementExecutor = MeasurementExecutor(projectConfig, commandExecutor, gitWrapper)
     for (commit in projectData.commits) {
-        measurementExecutor.executeIfNeeded(commit)
+        val updatedCommit = measurementExecutor.executeIfNeeded(commit as JsonObject, runAllMeasurements)
+        if (updatedCommit != null) {
+            ProjectDataReaderWriter.write(projectConfig.name, updatedCommit)
+        }
     }
-
-
-    println(projectData)
-//
-//    var shouldCheckout = false
-//
-//    for (commit in projectData.commits) {
-//
-//        println("Running on commit. $commit")
-//        if (measurements == null) {
-//            println("Measurements == null, should check out!")
-//            shouldCheckout = true
-//        } else {
-//            for (measurement in projectConfig.measurements) {
-//            }
-//
-//
-//            if (shouldCheckout) {
-//                gitWrapper.checkout(hash)
-//                for (measurement in projectConfig.measurements) {
-//                    val measured = commit["measurements"]
-//
-//                    println("qwerty1" + commit)
-//                    println("qwerty2" + measured)
-//                    if (measurement.type == "grep") {
-//                        println("grepping?" + measurement)
-//                    }
-//                }
-//
-//
-//                val command = listOf("grep", "--recursive", "-i", "-e", "import com.google.gson.Gson", ".")
-//                val amount = commandExecutor.execute(command).lines().size
-//                println("amount: $amount")
-//
-//                exitProcess(1)
-//            }
-//        }
-//
-//
-//    }
 }
 
 fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
 
     val commits = gitWrapper.log()
-
     val importantCommitFilter = ImportantCommitFilter(commits)
     val annotatedCommits = importantCommitFilter.filterImportantCommits()
 
-
-    val projectData = ProjectDataReader.read(projectConfig.name)
+    val projectData = ProjectDataReaderWriter.read(projectConfig.name)
     projectData.syncCommits(annotatedCommits)
-    ProjectDataReader.write(projectConfig.name, projectData)
+    ProjectDataReaderWriter.write(projectConfig.name, projectData)
 }
 
 
@@ -104,4 +78,6 @@ fun chart() {
 
 class MyArgs(parser: ArgParser) {
     val project by parser.storing("project name")
+    val runAllMeasurements by parser.flagging("--runAllMeasurements", help = "(Re)run all measurements")
+        .default(defaultValue = false)
 }

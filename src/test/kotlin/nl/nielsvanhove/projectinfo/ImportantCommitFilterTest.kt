@@ -1,11 +1,12 @@
 package nl.nielsvanhove.projectinfo
 
+import nl.nielsvanhove.projectinfo.core.ImportantCommitFilter
+import nl.nielsvanhove.projectinfo.core.LogItem
+import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import java.time.OffsetDateTime
-import java.time.ZoneId
 import java.time.ZoneOffset
-import java.time.ZonedDateTime
 
 class ImportantCommitFilterTest {
 
