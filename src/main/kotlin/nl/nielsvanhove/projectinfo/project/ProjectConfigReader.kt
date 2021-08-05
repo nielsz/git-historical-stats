@@ -2,9 +2,12 @@ package nl.nielsvanhove.projectinfo.project
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
+import nl.nielsvanhove.projectinfo.charts.Chart
+import nl.nielsvanhove.projectinfo.charts.ChartStack
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
 import java.io.File
+import kotlin.system.exitProcess
 
 object ProjectConfigReader {
 
@@ -35,7 +38,7 @@ object ProjectConfigReader {
                         filePattern = measurementJson["file_pattern"]!!.jsonPrimitive.content,
                     )
                 )
-            }else if (type == "linesInFile") {
+            } else if (type == "linesInFile") {
                 patterns.add(
                     LinesInFileMeasurementConfig(
                         key = measurementJson["key"]!!.jsonPrimitive.content,
@@ -44,8 +47,6 @@ object ProjectConfigReader {
                     )
                 )
             }
-
-
         }
 
         val filetypes = mutableListOf<String>()
@@ -53,6 +54,30 @@ object ProjectConfigReader {
             filetypes.add(jsonElement.jsonPrimitive.content)
         }
 
-        return ProjectConfig(name = projectName, repo = File(repo), branch = branch, filetypes, measurements = patterns)
+        val charts = mutableListOf<Chart>()
+        for (jsonElement in rootObject["charts"]!!.jsonArray) {
+            val item = jsonElement.jsonObject
+
+            val chartStacks = mutableListOf<ChartStack>()
+            for (jsonElement in item["items"]!!.jsonArray) {
+                chartStacks.add(ChartStack((jsonElement as JsonArray).map { it.jsonPrimitive.content }))
+            }
+
+            val chart = Chart(
+                id = item["id"]!!.jsonPrimitive.content,
+                title = item["title"]!!.jsonPrimitive.content,
+                items = chartStacks
+            )
+            charts.add(chart)
+        }
+
+        return ProjectConfig(
+            name = projectName,
+            repo = File(repo),
+            branch = branch,
+            filetypes,
+            measurements = patterns,
+            charts = charts
+        )
     }
 }

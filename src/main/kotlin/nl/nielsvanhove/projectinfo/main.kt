@@ -1,9 +1,9 @@
 package nl.nielsvanhove.projectinfo
 
-import com.github.sh0nk.matplotlib4j.Plot
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import kotlinx.serialization.json.JsonObject
+import nl.nielsvanhove.projectinfo.charts.ChartGenerator
 import nl.nielsvanhove.projectinfo.core.CommandExecutor
 import nl.nielsvanhove.projectinfo.core.GitWrapper
 import nl.nielsvanhove.projectinfo.core.ImportantCommitFilter
@@ -11,15 +11,11 @@ import nl.nielsvanhove.projectinfo.measurements.MeasurementExecutor
 import nl.nielsvanhove.projectinfo.project.ProjectConfig
 import nl.nielsvanhove.projectinfo.project.ProjectConfigReader
 import nl.nielsvanhove.projectinfo.project.ProjectDataReaderWriter
-import java.util.*
-import kotlin.system.exitProcess
 
 
 fun main(args: Array<String>) {
 
     val arguments = ArgParser(args).parseInto(::MyArgs)
-
-    println("runAllMeasurements: " + arguments.runAllMeasurements)
 
     val projectConfig = ProjectConfigReader.read(arguments.project)
     val commandExecutor = CommandExecutor(projectConfig)
@@ -27,6 +23,16 @@ fun main(args: Array<String>) {
 
     syncCommits(projectConfig, gitWrapper)
     executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments.runAllMeasurements)
+    generateCharts(projectConfig)
+}
+
+fun generateCharts(projectConfig: ProjectConfig) {
+    val projectData = ProjectDataReaderWriter.read(projectConfig.name)
+
+    val chartGenerator = ChartGenerator(projectData)
+    for (chart in projectConfig.charts) {
+        chartGenerator.generate(chart)
+    }
 }
 
 fun executeMeasurements(
@@ -57,23 +63,7 @@ fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
 }
 
 
-fun chart() {
-    val plt = Plot.create()
-    plt.plot()
-        .add(Arrays.asList(1.3, 2))
-        .label("label")
-        .linestyle("--")
-    plt.xlabel("xlabel")
-    plt.ylabel("ylabel")
-    plt.text(0.5, 0.2, "text")
-    plt.title("Title!")
-    plt.legend()
-    //plt.show()
-    plt.savefig("my_example_plot.png")
 
-    // Don't miss this line to output the file!
-    plt.executeSilently();
-}
 
 
 class MyArgs(parser: ArgParser) {
