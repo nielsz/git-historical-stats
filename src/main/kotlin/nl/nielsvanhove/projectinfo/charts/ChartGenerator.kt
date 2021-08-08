@@ -9,12 +9,12 @@ import nl.nielsvanhove.projectinfo.project.ProjectData
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class ChartGenerator(val projectData: ProjectData) {
+class ChartGenerator(private val projectData: ProjectData) {
 
     /**
      * Get all the content, in a parsable way, trimming the data on the front
      */
-    fun getContent(list: List<String>, granularity: Granularity): List<ChartRowData> {
+    private fun getContent(list: List<String>, granularity: Granularity): List<ChartRowData> {
         val returnValues = mutableListOf<ChartRowData>()
         for (commit in projectData.commits) {
             val commitMeasurementValues = mutableMapOf<String, Int>()

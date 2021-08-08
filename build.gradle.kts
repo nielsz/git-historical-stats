@@ -15,7 +15,6 @@ repositories {
 dependencies {
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
-
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.0.1")
     implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.0.4")
 

@@ -46,6 +46,16 @@ object ProjectConfigReader {
                         linePattern = measurementJson["line_pattern"]!!.jsonPrimitive.content,
                     )
                 )
+            } else if (type == "cloc") {
+                val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
+
+                patterns.add(
+                    ClocMeasurementConfig(
+                        key = measurementJson["key"]!!.jsonPrimitive.content,
+                        filetypes = filetypes,
+                        folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                    )
+                )
             }
         }
 
