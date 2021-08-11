@@ -7,6 +7,7 @@ import jetbrains.letsPlot.intern.Plot
 import jetbrains.letsPlot.label.labs
 import jetbrains.letsPlot.letsPlot
 import jetbrains.letsPlot.sampling.samplingNone
+import jetbrains.letsPlot.scale.scaleFillDiscrete
 import jetbrains.letsPlot.scale.scaleFillManual
 import jetbrains.letsPlot.scale.scaleXDiscrete
 import jetbrains.letsPlot.theme
@@ -29,8 +30,11 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
             }
         }
 
+        val labels = chart.items.flatMap { it.items }
+
         return plot +
                 scaleFillManual(values = colors) +
+                scaleFillDiscrete(name=" ", labels = labels) +
                 scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates) +
                 theme()
     }

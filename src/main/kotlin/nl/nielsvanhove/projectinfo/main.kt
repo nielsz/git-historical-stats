@@ -15,14 +15,13 @@ import nl.nielsvanhove.projectinfo.project.ProjectDataReaderWriter
 
 fun main(args: Array<String>) {
 
-    val arguments = ArgParser(args).parseInto(::MyArgs)
-
+    val arguments = ArgParser(args).parseInto(::ApplicationArgs)
     val projectConfig = ProjectConfigReader.read(arguments.project)
     val commandExecutor = CommandExecutor(projectConfig)
     val gitWrapper = GitWrapper(projectConfig, commandExecutor)
 
     syncCommits(projectConfig, gitWrapper)
-    executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments.runAllMeasurements)
+    executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
     generateCharts(projectConfig)
 }
 
@@ -31,6 +30,7 @@ fun generateCharts(projectConfig: ProjectConfig) {
 
     val chartGenerator = ChartGenerator(projectData)
     for (chart in projectConfig.charts) {
+        println("generating $chart")
         chartGenerator.generate(chart)
     }
 }
@@ -39,12 +39,19 @@ fun executeMeasurements(
     projectConfig: ProjectConfig,
     commandExecutor: CommandExecutor,
     gitWrapper: GitWrapper,
-    runAllMeasurements: Boolean
+    args: ApplicationArgs
 ) {
     val projectData = ProjectDataReaderWriter.read(projectConfig.name)
     val measurementExecutor = MeasurementExecutor(projectConfig, commandExecutor, gitWrapper)
     for (commit in projectData.commits) {
-        val updatedCommit = measurementExecutor.executeIfNeeded(commit as JsonObject, runAllMeasurements)
+
+
+        val updatedCommit =
+            measurementExecutor.executeIfNeeded(
+                commit as JsonObject,
+                forceUpdateAll = args.runAllMeasurements,
+                forceSpecificUpdate = args.rerunMeasurement
+            )
         if (updatedCommit != null) {
             ProjectDataReaderWriter.write(projectConfig.name, updatedCommit)
         }
@@ -63,11 +70,13 @@ fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
 }
 
 
+class ApplicationArgs(parser: ArgParser) {
 
+    val project by parser.storing("-p", "--project", help = "project name")
 
+    val rerunMeasurement by parser.storing("--rerunMeasurement", help = "Rerun one measurement")
+        .default(null)
 
-class MyArgs(parser: ArgParser) {
-    val project by parser.storing("project name")
     val runAllMeasurements by parser.flagging("--runAllMeasurements", help = "(Re)run all measurements")
         .default(defaultValue = false)
 }

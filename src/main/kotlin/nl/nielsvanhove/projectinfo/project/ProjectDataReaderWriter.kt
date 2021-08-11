@@ -4,14 +4,23 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import java.io.File
+import java.io.FileNotFoundException
 
 object ProjectDataReaderWriter {
 
     fun read(projectName: String): ProjectData {
         val filename = "projects/$projectName.data.json"
-        val content = File(filename).readText()
-        val rootObject = Json.decodeFromString<JsonArray>(content)
-        return ProjectData(commits = rootObject)
+
+        try {
+            val content = File(filename).readText()
+            if (content.isEmpty()) {
+                return ProjectData(commits = JsonArray(content = listOf()))
+            }
+            val rootObject = Json.decodeFromString<JsonArray>(content)
+            return ProjectData(commits = rootObject)
+        } catch(ex: FileNotFoundException) {
+            return ProjectData(commits = JsonArray(content = listOf()))
+        }
     }
 
     fun write(projectName: String, projectData: ProjectData) {

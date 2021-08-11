@@ -8,18 +8,17 @@ import nl.nielsvanhove.projectinfo.core.CommandExecutor
 import nl.nielsvanhove.projectinfo.core.GitWrapper
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
 import nl.nielsvanhove.projectinfo.project.ProjectConfig
-import java.lang.RuntimeException
 
 class MeasurementExecutor(
     val projectConfig: ProjectConfig,
     val commandExecutor: CommandExecutor,
     val gitWrapper: GitWrapper
 ) {
-    fun executeIfNeeded(commit: JsonObject, runAllMeasurements: Boolean): JsonObject? {
+    fun executeIfNeeded(commit: JsonObject, forceUpdateAll: Boolean, forceSpecificUpdate: String?): JsonObject? {
 
         val previousMeasurements = commit["measurements"] as JsonObject
 
-        if (!shouldCheckout(previousMeasurements) && !runAllMeasurements) {
+        if (!shouldCheckout(previousMeasurements) && !forceUpdateAll && forceSpecificUpdate.isNullOrEmpty()) {
             return null
         }
 
@@ -28,7 +27,7 @@ class MeasurementExecutor(
 
         val measurementsToRun = mutableListOf<MeasurementConfig>()
         for (measurement in projectConfig.measurements) {
-            if (!(previousMeasurements).containsKey(measurement.key) || runAllMeasurements) {
+            if (!(previousMeasurements).containsKey(measurement.key) || forceUpdateAll || forceSpecificUpdate == measurement.key) {
                 measurementsToRun.add(measurement)
             }
         }
@@ -51,16 +50,12 @@ class MeasurementExecutor(
 
     private fun executeMeasurement(measurement: MeasurementConfig): Int {
         return when (measurement) {
+            is BashMeasurementConfig -> {
+                val executor = BashExecutor(projectConfig, commandExecutor, measurement)
+                executor()
+            }
             is GrepMeasurementConfig -> {
                 val executor = GrepExecutor(projectConfig, commandExecutor, measurement)
-                executor()
-            }
-            is FilesInFolderMeasurementConfig -> {
-                val executor = FilesInFolderExecutor(projectConfig, commandExecutor, measurement)
-                executor()
-            }
-            is LinesInFileMeasurementConfig -> {
-                val executor = LinesInFileExecutor(projectConfig, commandExecutor, measurement)
                 executor()
             }
             is ClocMeasurementConfig -> {

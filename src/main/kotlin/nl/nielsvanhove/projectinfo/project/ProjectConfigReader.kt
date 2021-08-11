@@ -7,7 +7,6 @@ import nl.nielsvanhove.projectinfo.charts.ChartStack
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
 import java.io.File
-import kotlin.system.exitProcess
 
 object ProjectConfigReader {
 
@@ -23,39 +22,34 @@ object ProjectConfigReader {
         val patterns = mutableListOf<MeasurementConfig>()
         for (measurementJson in measurementsJson) {
             val type = (measurementJson as JsonObject)["type"]!!.jsonPrimitive.content
-            if (type == "grep") {
-                patterns.add(
-                    GrepMeasurementConfig(
-                        key = measurementJson["key"]!!.jsonPrimitive.content,
-                        pattern = measurementJson["pattern"]!!.jsonPrimitive.content,
+            when (type) {
+                "bash" -> {
+                    patterns.add(
+                        BashMeasurementConfig(
+                            key = measurementJson["key"]!!.jsonPrimitive.content,
+                            command = measurementJson["command"]!!.jsonPrimitive.content,
+                        )
                     )
-                )
-            } else if (type == "filesInFolder") {
-                patterns.add(
-                    FilesInFolderMeasurementConfig(
-                        key = measurementJson["key"]!!.jsonPrimitive.content,
-                        folderPattern = measurementJson["folder_pattern"]!!.jsonPrimitive.content,
-                        filePattern = measurementJson["file_pattern"]!!.jsonPrimitive.content,
+                }
+                "grep" -> {
+                    patterns.add(
+                        GrepMeasurementConfig(
+                            key = measurementJson["key"]!!.jsonPrimitive.content,
+                            pattern = measurementJson["pattern"]!!.jsonPrimitive.content,
+                        )
                     )
-                )
-            } else if (type == "linesInFile") {
-                patterns.add(
-                    LinesInFileMeasurementConfig(
-                        key = measurementJson["key"]!!.jsonPrimitive.content,
-                        filePattern = measurementJson["file_pattern"]!!.jsonPrimitive.content,
-                        linePattern = measurementJson["line_pattern"]!!.jsonPrimitive.content,
-                    )
-                )
-            } else if (type == "cloc") {
-                val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
+                }
+                "cloc" -> {
+                    val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
 
-                patterns.add(
-                    ClocMeasurementConfig(
-                        key = measurementJson["key"]!!.jsonPrimitive.content,
-                        filetypes = filetypes,
-                        folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                    patterns.add(
+                        ClocMeasurementConfig(
+                            key = measurementJson["key"]!!.jsonPrimitive.content,
+                            filetypes = filetypes,
+                            folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                        )
                     )
-                )
+                }
             }
         }
 
