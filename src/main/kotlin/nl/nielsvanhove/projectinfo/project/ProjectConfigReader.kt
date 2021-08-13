@@ -56,12 +56,13 @@ object ProjectConfigReader {
                     }
                     "cloc" -> {
                         val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
+                        val folder = if (measurementJson.containsKey("folder") ) {measurementJson["folder"]!!.jsonPrimitive.content} else "."
 
                         patterns.add(
                             ClocMeasurementConfig(
                                 key = measurementJson["key"]!!.jsonPrimitive.content,
                                 filetypes = filetypes,
-                                folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                                folder = folder
                             )
                         )
                     }
