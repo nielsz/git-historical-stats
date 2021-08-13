@@ -6,7 +6,7 @@ An iterative commandline tool to generate statistics on long-term projects. This
 2. Calculate measurements for those commits.
 3. Generate charts on those measurements.
 
-These charts can be useful when you're doing long-term migrations which can't be done overnight, but you want to keep progress
+These charts can be useful when you're doing long-term migrations which can't be done overnight, but you want to keep progress.
 
 It's iterative, so the second time this script runs, it will only calculate the latest commits and new measurements and
 charts.
@@ -14,7 +14,7 @@ charts.
 ---
 
 As an example, there are three samples from Google IO's Schedule app (https://github.com/google/iosched), which is
-updated each year with the latest technologies.
+updated each year with the latest technologies. One odd thing in this repo is that it's not an entire-year process, but gets only worked on for a few months. Therefore you can see that the last commit of 2018 was in August.
 
 1. Lines of code per year.
 You can see that in 2018 the app was rewritten in Kotlin and that a lot less code was needed.
