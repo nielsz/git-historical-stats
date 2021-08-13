@@ -6,8 +6,27 @@ An iterative commandline tool to generate statistics on long-term projects. This
 2. Calculate measurements for those commits.
 3. Generate charts on those measurements.
 
-It's iterative, so the second time this script runs, it will only calculate the latest commits and new measurements and charts.
+These charts can be useful when you're doing long-term migrations which can't be done overnight, but you want to keep progress
 
+It's iterative, so the second time this script runs, it will only calculate the latest commits and new measurements and
+charts.
+
+---
+
+As an example, there are three samples from Google IO's Schedule app (https://github.com/google/iosched), which is
+updated each year with the latest technologies.
+
+1. Lines of code per year.
+You can see that in 2018 the app was rewritten in Kotlin and that a lot less code was needed.
+   ![Google IOSched Lines of code per year](https://github.com/nielsz/project-info/blob/main/screenshots/google_iosched_cloc_year.png?raw=true)
+
+
+2. Number of files that contain `import org.junit.Test` and number of `@Test` annotations.    ![Google IOSched Junit4](https://github.com/nielsz/project-info/blob/main/screenshots/google_iosched_junit4_year.png?raw=true)
+
+
+3. Activities and Fragments. Google has moved towards Fragments without Activities for the last few years now.   ![Google IOSched lifecycle](https://github.com/nielsz/project-info/blob/main/screenshots/google_iosched_lifecycle_year.png?raw=true)
+
+---
 ## Step 1
 
 Based on the config file which contains the path to the local repo and the branch, it will run a git log, and will store
@@ -61,9 +80,11 @@ example calculates the amount of Android Activities.
 ## Step 3
 
 Based on the measurements, it's possible to generate charts. For each chart, it will generate three charts: Yearly,
-Quarterly and Monthly. The output is always a bar chart. It can have multiple bars, and each bar can be a stacked bar as well.
+Quarterly and Monthly. The output is always a bar chart. It can have multiple bars, and each bar can be a stacked bar as
+well.
 
 Display the number of JUnit4 imports:
+
 ```
 {
       "id": "junit4",
@@ -75,6 +96,7 @@ Display the number of JUnit4 imports:
 ```
 
 Display Junit4 vs Junit5 as two separate bars:
+
 ```
 {
     "id": "junit4_5",
@@ -86,8 +108,9 @@ Display Junit4 vs Junit5 as two separate bars:
 }
 ```
 
-Stackable charts: All versions of rxjava are stacked and placed as one bar next to Kotlin Coroutines.
-Optionally, this chart has a customized legend.
+Stackable charts: All versions of rxjava are stacked and placed as one bar next to Kotlin Coroutines. Optionally, this
+chart has a customized legend.
+
 ```
 {
     "id": "reactive",
@@ -111,6 +134,7 @@ Optionally, this chart has a customized legend.
 ## Config
 
 Example config:
+
 ```
 {
   "repo": "/local/path/to/repo",
