@@ -30,11 +30,15 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
             }
         }
 
-        val labels = chart.items.flatMap { it.items }
+
+        val legend = chart.legend
+        val legendLabels = legend?.items ?: chart.items.flatMap { it.items }
+
+        val legendName = legend?.title ?: " "
 
         return plot +
                 scaleFillManual(values = colors) +
-                scaleFillDiscrete(name=" ", labels = labels) +
+                scaleFillDiscrete(name= legendName, labels = legendLabels) +
                 scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates) +
                 theme()
     }

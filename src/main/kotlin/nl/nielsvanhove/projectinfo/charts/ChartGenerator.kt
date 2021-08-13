@@ -80,22 +80,30 @@ class ChartGenerator(private val projectData: ProjectData) {
 
     private fun getColorsFor(items: List<ChartStack>): List<String> {
         val colors = mutableListOf<String>()
-        items.forEachIndexed { index, chartStack ->
-            val source = if (index == 0) {
-                if (chartStack.items.size <= 3) {
-                    redChartColorsSmall
+
+        val totalColors = items.flatMap { it.items }.size
+        if(totalColors <= baseColors.size) {
+            colors.addAll(baseColors.subList(0, totalColors))
+        } else {
+            items.forEachIndexed { index, chartStack ->
+                val source = if (index == 0) {
+                    if (chartStack.items.size <= 3) {
+                        redChartColorsSmall
+                    } else {
+                        redChartColorsLarge
+                    }
                 } else {
-                    redChartColorsLarge
+                    if (chartStack.items.size <= 3) {
+                        blueChartColorsSmall
+                    } else {
+                        blueChartColorsLarge
+                    }
                 }
-            } else {
-                if (chartStack.items.size <= 3) {
-                    blueChartColorsSmall
-                } else {
-                    blueChartColorsLarge
-                }
+                colors.addAll(source.subList(0, chartStack.items.size))
             }
-            colors.addAll(source.subList(0, chartStack.items.size))
         }
+
+
 
         return colors
     }

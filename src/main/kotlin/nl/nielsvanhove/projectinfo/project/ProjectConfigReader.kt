@@ -3,6 +3,7 @@ package nl.nielsvanhove.projectinfo.project
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import nl.nielsvanhove.projectinfo.charts.Chart
+import nl.nielsvanhove.projectinfo.charts.ChartLegend
 import nl.nielsvanhove.projectinfo.charts.ChartStack
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
@@ -67,10 +68,20 @@ object ProjectConfigReader {
                 chartStacks.add(ChartStack((jsonElement as JsonArray).map { it.jsonPrimitive.content }))
             }
 
+            val legend = item["legend"] as JsonObject?
+            val chartLegend = if(legend != null) {
+                val legendTitle = if(legend.containsKey("title")) { (legend["title"] as JsonPrimitive).content } else { null}
+                val legendItems = (legend["items"] as JsonArray).map { it.jsonPrimitive.content }
+                ChartLegend(title = legendTitle, items = legendItems)
+            } else {
+                null
+            }
+
             val chart = Chart(
                 id = item["id"]!!.jsonPrimitive.content,
                 title = item["title"]!!.jsonPrimitive.content,
-                items = chartStacks
+                items = chartStacks,
+                legend = chartLegend
             )
             charts.add(chart)
         }
