@@ -1,0 +1,136 @@
+# Project Info
+
+An iterative commandline tool to generate statistics on long-term projects. This tools consists of three steps:
+
+1. Get "important" commits.
+2. Calculate measurements for those commits.
+3. Generate charts on those measurements.
+
+It's iterative, so the second time this script runs, it will only calculate the latest commits and new measurements and charts.
+
+## Step 1
+
+Based on the config file which contains the path to the local repo and the branch, it will run a git log, and will store
+the important commits in the data file. A commit will be considered important if it's the first commit, the last commit,
+or the last commit of a month, quarter or year.
+
+## Step 2
+
+For each commit, it will run measurements. A measurement can be cloc, a simple grep call, or a custom written bash
+script.
+
+#### Type: CLOC
+
+This calculates the sum of all files that have the extension `.kt`
+
+```
+{
+      "type": "cloc",
+      "key": "cloc_kotlin",
+      "filetypes": [
+        "kt"
+      ]
+    }
+```
+
+#### Type: GREP
+
+This calculates the amount of times a certain grep is found in the codebase.
+
+```
+{
+      "type": "grep",
+      "key": "junit4imports",
+      "pattern": "import org.junit.Test"
+    }
+```
+
+#### Type: BASH
+
+This allows you to run your own custom scripts to calculate something. It should always output a number. The following
+example calculates the amount of Android Activities.
+
+```
+{
+      "type": "bash",
+      "key": "activities",
+      "command": "git ls-files | grep \"AndroidManifest.xml\" | xargs cat | grep \"<activity\" | wc -l"
+    }
+```
+
+## Step 3
+
+Based on the measurements, it's possible to generate charts. For each chart, it will generate three charts: Yearly,
+Quarterly and Monthly. The output is always a bar chart. It can have multiple bars, and each bar can be a stacked bar as well.
+
+Display the number of JUnit4 imports:
+```
+{
+      "id": "junit4",
+      "title": "JUnit 4",
+      "items": [
+        ["junit4imports"]
+      ]
+    }
+```
+
+Display Junit4 vs Junit5 as two separate bars:
+```
+{
+    "id": "junit4_5",
+    "title": "JUnit 4 vs Junit 5",
+    "items": [
+      ["junit4imports"],
+      ["junit5imports"]
+    ]
+}
+```
+
+Stackable charts: All versions of rxjava are stacked and placed as one bar next to Kotlin Coroutines.
+Optionally, this chart has a customized legend.
+```
+{
+    "id": "reactive",
+    "title": "Reactive programming",
+    "items": [
+      ["rxjava1", "rxjava2", "rxjava3"],
+      ["kotlincoroutines"]
+    ],
+    "legend": {
+        "title": "Reactive",
+        "items": [
+          "RxJava 1",
+          "RxJava 2",
+          "RxJava 3",
+          "Coroutines"
+        ]
+      }
+}
+```
+
+## Config
+
+Example config:
+```
+{
+  "repo": "/local/path/to/repo",
+  "branch": "develop",
+  "filetypes": ["kt","java"],
+  "measurements": [
+    {
+      "type": "grep",
+      "key": "junit4imports",
+      "pattern": "import org.junit.Test"
+    }
+  ],
+  "charts": [
+    {
+      "id": "junit4",
+      "title": "JUnit 4",
+      "items": [
+        ["junit4imports"]
+      ]
+    }
+  ]
+}
+```
