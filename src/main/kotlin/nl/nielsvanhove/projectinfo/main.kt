@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
 fun generateCharts(projectConfig: ProjectConfig) {
     val projectData = ProjectDataReaderWriter.read(projectConfig.name)
 
-    val chartGenerator = ChartGenerator(projectData)
+    val chartGenerator = ChartGenerator(projectConfig, projectData)
     for (chart in projectConfig.charts) {
         println("generating $chart")
         chartGenerator.generate(chart)

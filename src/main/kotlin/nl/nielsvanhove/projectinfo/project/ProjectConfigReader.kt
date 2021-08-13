@@ -8,48 +8,63 @@ import nl.nielsvanhove.projectinfo.charts.ChartStack
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
 import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
 import java.io.File
+import java.io.FileNotFoundException
 
 object ProjectConfigReader {
 
     fun read(projectName: String): ProjectConfig {
         val filename = "projects/$projectName.config.json"
 
-        val rootObject = Json.decodeFromString<JsonObject>(File(filename).readText())
+        val rootObject = try {
+             Json.decodeFromString<JsonObject>(File(filename).readText())
+        } catch(ex: FileNotFoundException) {
+            System.err.println("Can't find project. Create $filename in the projects folder.")
+            System.err.println("{\n" +
+                    "  \"repo\": \"My local path to the repository\",\n" +
+                    "  \"branch\": \"develop\",\n" +
+                    "  \"filetypes\":[\"kt\",\"java\"],\n" +
+                    "  \"charts\":[],\n" +
+                    "  \"measurements\":[]\n" +
+        "}")
+            throw ex
+        }
 
         val repo = rootObject["repo"]!!.jsonPrimitive.content
         val branch = rootObject["branch"]!!.jsonPrimitive.content
 
-        val measurementsJson = rootObject["measurements"] as JsonArray
+        val measurementsJson = rootObject["measurements"] as JsonArray?
         val patterns = mutableListOf<MeasurementConfig>()
-        for (measurementJson in measurementsJson) {
-            val type = (measurementJson as JsonObject)["type"]!!.jsonPrimitive.content
-            when (type) {
-                "bash" -> {
-                    patterns.add(
-                        BashMeasurementConfig(
-                            key = measurementJson["key"]!!.jsonPrimitive.content,
-                            command = measurementJson["command"]!!.jsonPrimitive.content,
+        if (measurementsJson != null) {
+            for (measurementJson in measurementsJson) {
+                val type = (measurementJson as JsonObject)["type"]!!.jsonPrimitive.content
+                when (type) {
+                    "bash" -> {
+                        patterns.add(
+                            BashMeasurementConfig(
+                                key = measurementJson["key"]!!.jsonPrimitive.content,
+                                command = measurementJson["command"]!!.jsonPrimitive.content,
+                            )
                         )
-                    )
-                }
-                "grep" -> {
-                    patterns.add(
-                        GrepMeasurementConfig(
-                            key = measurementJson["key"]!!.jsonPrimitive.content,
-                            pattern = measurementJson["pattern"]!!.jsonPrimitive.content,
+                    }
+                    "grep" -> {
+                        patterns.add(
+                            GrepMeasurementConfig(
+                                key = measurementJson["key"]!!.jsonPrimitive.content,
+                                pattern = measurementJson["pattern"]!!.jsonPrimitive.content,
+                            )
                         )
-                    )
-                }
-                "cloc" -> {
-                    val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
+                    }
+                    "cloc" -> {
+                        val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
 
-                    patterns.add(
-                        ClocMeasurementConfig(
-                            key = measurementJson["key"]!!.jsonPrimitive.content,
-                            filetypes = filetypes,
-                            folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                        patterns.add(
+                            ClocMeasurementConfig(
+                                key = measurementJson["key"]!!.jsonPrimitive.content,
+                                filetypes = filetypes,
+                                folder = measurementJson["folder"]!!.jsonPrimitive.content,
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

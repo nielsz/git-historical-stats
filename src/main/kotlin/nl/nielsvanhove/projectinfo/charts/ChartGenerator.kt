@@ -5,11 +5,12 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.nielsvanhove.projectinfo.model.Granularity
 import nl.nielsvanhove.projectinfo.model.Granularity.*
+import nl.nielsvanhove.projectinfo.project.ProjectConfig
 import nl.nielsvanhove.projectinfo.project.ProjectData
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class ChartGenerator(private val projectData: ProjectData) {
+class ChartGenerator(private val projectConfig: ProjectConfig, private val projectData: ProjectData) {
 
     /**
      * Get all the content, in a parsable way, trimming the data on the front
@@ -75,7 +76,7 @@ class ChartGenerator(private val projectData: ProjectData) {
 
         val renderer = ChartRenderer(chart = chart, data = data, dates = dates, colors = getColorsFor(chart.items))
         val plot = renderer.render()
-        ggsave(plot, "$id.png", path = "output")
+        ggsave(plot, "$id.png", path = "output/" + projectConfig.name)
     }
 
     private fun getColorsFor(items: List<ChartStack>): List<String> {
