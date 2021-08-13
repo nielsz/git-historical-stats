@@ -20,9 +20,11 @@ fun main(args: Array<String>) {
     val commandExecutor = CommandExecutor(projectConfig)
     val gitWrapper = GitWrapper(projectConfig, commandExecutor)
 
+    gitWrapper.reset()
     syncCommits(projectConfig, gitWrapper)
     executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
     generateCharts(projectConfig)
+    gitWrapper.reset()
 }
 
 fun generateCharts(projectConfig: ProjectConfig) {
