@@ -24,7 +24,4 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
-    - name: GH Release
-      uses: softprops/action-gh-release@v0.1.12
-      
+      run: ./gradlew test build
