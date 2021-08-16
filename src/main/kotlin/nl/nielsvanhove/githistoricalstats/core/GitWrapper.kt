@@ -8,7 +8,7 @@ class GitWrapper(private val projectConfig: ProjectConfig, private val commandEx
     fun reset() {
         val c = "git reset --hard HEAD"
         val command = listOf("bash", "-c") + listOf(c)
-        val output = commandExecutor.execute(command).trim()
+        commandExecutor.execute(command).trim()
     }
 
     fun log(): List<LogItem> {

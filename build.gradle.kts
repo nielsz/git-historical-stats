@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.5.20"
     application
 }
 
 group = "nl.nielsvanhove"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-beta01"
 
 repositories {
     mavenCentral()
@@ -33,5 +33,5 @@ tasks.withType<KotlinCompile>() {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("nl.nielsvanhove.githistoricalstats.Main")
 }

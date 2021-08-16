@@ -18,7 +18,8 @@ object ProjectConfigReader {
         val rootObject = try {
              Json.decodeFromString<JsonObject>(File(filename).readText())
         } catch(ex: FileNotFoundException) {
-            System.err.println("Can't find project. Create $filename in the projects folder.")
+            val absolutePath = File("").absolutePath
+            System.err.println("Can't find project. Create $absolutePath/$filename in the projects folder.")
             System.err.println("{\n" +
                     "  \"repo\": \"My local path to the repository\",\n" +
                     "  \"branch\": \"develop\",\n" +

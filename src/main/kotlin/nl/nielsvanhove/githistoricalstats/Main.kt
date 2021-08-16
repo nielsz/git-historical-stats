@@ -12,20 +12,28 @@ import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import nl.nielsvanhove.githistoricalstats.project.ProjectConfigReader
 import nl.nielsvanhove.githistoricalstats.project.ProjectDataReaderWriter
 
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
 
-fun main(args: Array<String>) {
+            val arguments = ArgParser(args).parseInto(::ApplicationArgs)
+            val projectConfig = ProjectConfigReader.read(arguments.project)
+            projectConfig.validate()
 
-    val arguments = ArgParser(args).parseInto(::ApplicationArgs)
-    val projectConfig = ProjectConfigReader.read(arguments.project)
-    val commandExecutor = CommandExecutor(projectConfig)
-    val gitWrapper = GitWrapper(projectConfig, commandExecutor)
 
-    gitWrapper.reset()
-    syncCommits(projectConfig, gitWrapper)
-    executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
-    generateCharts(projectConfig)
-    gitWrapper.reset()
+            val commandExecutor = CommandExecutor(projectConfig)
+            val gitWrapper = GitWrapper(projectConfig, commandExecutor)
+
+            gitWrapper.reset()
+            syncCommits(projectConfig, gitWrapper)
+            executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
+            generateCharts(projectConfig)
+            gitWrapper.reset()
+        }
+    }
 }
+
 
 fun generateCharts(projectConfig: ProjectConfig) {
     val projectData = ProjectDataReaderWriter.read(projectConfig.name)
