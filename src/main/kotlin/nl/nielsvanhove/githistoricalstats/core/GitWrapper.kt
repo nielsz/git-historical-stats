@@ -1,6 +1,6 @@
-package nl.nielsvanhove.projectinfo.core
+package nl.nielsvanhove.githistoricalstats.core
 
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import java.time.OffsetDateTime
 
 class GitWrapper(private val projectConfig: ProjectConfig, private val commandExecutor: CommandExecutor) {

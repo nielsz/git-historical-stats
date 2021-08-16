@@ -1,11 +1,10 @@
-package nl.nielsvanhove.projectinfo.project
+package nl.nielsvanhove.githistoricalstats.project
 
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import nl.nielsvanhove.projectinfo.charts.Chart
-import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
+import nl.nielsvanhove.githistoricalstats.model.AnnotatedCommit
 
 
 class ProjectData(var commits: JsonArray) {

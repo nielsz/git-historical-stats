@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo.project
+package nl.nielsvanhove.githistoricalstats.project
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

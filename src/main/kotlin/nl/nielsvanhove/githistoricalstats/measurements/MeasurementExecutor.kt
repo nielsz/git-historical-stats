@@ -1,13 +1,13 @@
-package nl.nielsvanhove.projectinfo.measurements
+package nl.nielsvanhove.githistoricalstats.measurements
 
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
-import nl.nielsvanhove.projectinfo.core.CommandExecutor
-import nl.nielsvanhove.projectinfo.core.GitWrapper
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.core.CommandExecutor
+import nl.nielsvanhove.githistoricalstats.core.GitWrapper
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.*
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 
 class MeasurementExecutor(
     val projectConfig: ProjectConfig,

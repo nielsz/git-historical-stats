@@ -1,8 +1,8 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.githistoricalstats
 
-import nl.nielsvanhove.projectinfo.core.ImportantCommitFilter
-import nl.nielsvanhove.projectinfo.core.LogItem
-import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
+import nl.nielsvanhove.githistoricalstats.core.ImportantCommitFilter
+import nl.nielsvanhove.githistoricalstats.core.LogItem
+import nl.nielsvanhove.githistoricalstats.model.AnnotatedCommit
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import java.time.OffsetDateTime

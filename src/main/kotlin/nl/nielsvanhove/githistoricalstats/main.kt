@@ -1,16 +1,16 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.githistoricalstats
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import kotlinx.serialization.json.JsonObject
-import nl.nielsvanhove.projectinfo.charts.ChartGenerator
-import nl.nielsvanhove.projectinfo.core.CommandExecutor
-import nl.nielsvanhove.projectinfo.core.GitWrapper
-import nl.nielsvanhove.projectinfo.core.ImportantCommitFilter
-import nl.nielsvanhove.projectinfo.measurements.MeasurementExecutor
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
-import nl.nielsvanhove.projectinfo.project.ProjectConfigReader
-import nl.nielsvanhove.projectinfo.project.ProjectDataReaderWriter
+import nl.nielsvanhove.githistoricalstats.charts.ChartGenerator
+import nl.nielsvanhove.githistoricalstats.core.CommandExecutor
+import nl.nielsvanhove.githistoricalstats.core.GitWrapper
+import nl.nielsvanhove.githistoricalstats.core.ImportantCommitFilter
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementExecutor
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfigReader
+import nl.nielsvanhove.githistoricalstats.project.ProjectDataReaderWriter
 
 
 fun main(args: Array<String>) {

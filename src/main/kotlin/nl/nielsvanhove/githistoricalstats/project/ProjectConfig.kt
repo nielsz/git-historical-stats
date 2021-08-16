@@ -1,7 +1,7 @@
-package nl.nielsvanhove.projectinfo.project
+package nl.nielsvanhove.githistoricalstats.project
 
-import nl.nielsvanhove.projectinfo.charts.Chart
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
+import nl.nielsvanhove.githistoricalstats.charts.Chart
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig
 import java.io.File
 
 data class ProjectConfig(

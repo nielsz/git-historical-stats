@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo.charts
+package nl.nielsvanhove.githistoricalstats.charts
 
 import jetbrains.letsPlot.Pos
 import jetbrains.letsPlot.Stat

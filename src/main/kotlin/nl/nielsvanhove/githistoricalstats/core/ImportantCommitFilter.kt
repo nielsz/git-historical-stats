@@ -1,6 +1,6 @@
-package nl.nielsvanhove.projectinfo.core
+package nl.nielsvanhove.githistoricalstats.core
 
-import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
+import nl.nielsvanhove.githistoricalstats.model.AnnotatedCommit
 import java.time.temporal.IsoFields
 
 /**

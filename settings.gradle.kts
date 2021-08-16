@@ -1,3 +1,3 @@
 
-rootProject.name = "projectInfo"
+rootProject.name = "gitHistoricalStats"
 

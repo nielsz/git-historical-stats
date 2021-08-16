@@ -1,6 +1,6 @@
-package nl.nielsvanhove.projectinfo.core
+package nl.nielsvanhove.githistoricalstats.core
 
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import java.io.File
 import java.io.IOException
 

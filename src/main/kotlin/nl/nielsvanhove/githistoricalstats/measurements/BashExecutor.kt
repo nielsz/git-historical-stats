@@ -1,8 +1,8 @@
-package nl.nielsvanhove.projectinfo.measurements
+package nl.nielsvanhove.githistoricalstats.measurements
 
-import nl.nielsvanhove.projectinfo.core.CommandExecutor
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.BashMeasurementConfig
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.core.CommandExecutor
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.BashMeasurementConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 
 class BashExecutor(
     private val projectConfig: ProjectConfig,

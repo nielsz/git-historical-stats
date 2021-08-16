@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo.charts
+package nl.nielsvanhove.githistoricalstats.charts
 
 import java.time.OffsetDateTime
 

@@ -1,12 +1,11 @@
-package nl.nielsvanhove.projectinfo.measurements
+package nl.nielsvanhove.githistoricalstats.measurements
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import nl.nielsvanhove.projectinfo.core.CommandExecutor
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.ClocMeasurementConfig
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
-import kotlin.system.exitProcess
+import nl.nielsvanhove.githistoricalstats.core.CommandExecutor
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.ClocMeasurementConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 
 class ClocExecutor(
     private val projectConfig: ProjectConfig,

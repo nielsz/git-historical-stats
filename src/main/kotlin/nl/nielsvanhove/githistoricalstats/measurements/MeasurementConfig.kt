@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo.measurements
+package nl.nielsvanhove.githistoricalstats.measurements
 
 sealed class MeasurementConfig(open val key: String) {
     data class BashMeasurementConfig(override val key: String, val command: String) : MeasurementConfig(key)

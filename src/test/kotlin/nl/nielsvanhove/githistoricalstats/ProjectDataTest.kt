@@ -1,8 +1,8 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.githistoricalstats
 
 import kotlinx.serialization.json.*
-import nl.nielsvanhove.projectinfo.model.AnnotatedCommit
-import nl.nielsvanhove.projectinfo.project.ProjectData
+import nl.nielsvanhove.githistoricalstats.model.AnnotatedCommit
+import nl.nielsvanhove.githistoricalstats.project.ProjectData
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime

@@ -1,4 +1,4 @@
-# Project Info
+# Git Historical Stats
 
 An iterative commandline tool to generate statistics on long-term projects. This tools consists of three steps:
 

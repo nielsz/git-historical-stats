@@ -1,12 +1,12 @@
-package nl.nielsvanhove.projectinfo.charts
+package nl.nielsvanhove.githistoricalstats.charts
 
 import jetbrains.letsPlot.export.ggsave
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import nl.nielsvanhove.projectinfo.model.Granularity
-import nl.nielsvanhove.projectinfo.model.Granularity.*
-import nl.nielsvanhove.projectinfo.project.ProjectConfig
-import nl.nielsvanhove.projectinfo.project.ProjectData
+import nl.nielsvanhove.githistoricalstats.model.Granularity
+import nl.nielsvanhove.githistoricalstats.model.Granularity.*
+import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
+import nl.nielsvanhove.githistoricalstats.project.ProjectData
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 

@@ -1,12 +1,12 @@
-package nl.nielsvanhove.projectinfo.project
+package nl.nielsvanhove.githistoricalstats.project
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-import nl.nielsvanhove.projectinfo.charts.Chart
-import nl.nielsvanhove.projectinfo.charts.ChartLegend
-import nl.nielsvanhove.projectinfo.charts.ChartStack
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig
-import nl.nielsvanhove.projectinfo.measurements.MeasurementConfig.*
+import nl.nielsvanhove.githistoricalstats.charts.Chart
+import nl.nielsvanhove.githistoricalstats.charts.ChartLegend
+import nl.nielsvanhove.githistoricalstats.charts.ChartStack
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.*
 import java.io.File
 import java.io.FileNotFoundException
 

@@ -1,4 +1,4 @@
-package nl.nielsvanhove.projectinfo
+package nl.nielsvanhove.githistoricalstats
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
