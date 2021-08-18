@@ -26,6 +26,26 @@ You can see that in 2018 the app was rewritten in Kotlin and that a lot less cod
 
 3. Activities and Fragments. Google has moved towards Fragments without Activities for the last few years now.   ![Google IOSched lifecycle](https://github.com/nielsz/project-info/blob/main/screenshots/google_iosched_lifecycle_year.png?raw=true)
 
+## Installation
+1. Download the latest release, and place it somewhere. `~/gitHistoricalStats` would be nice.
+2. Within the `bin` directory, create directories `repos` and `projects`.
+3. Do a new clone of your project to this repos directory. This is because this script will checkout all the important commits, and does some `git reset --hard HEAD` at the beginning and the end. You want to avoid running this script while there are uncommitted changes. 
+4. Add a `projects/myproject.config.json` with the following structure:
+```
+{
+   "repo": "~/gitHistoricalStats/repos/myproject",
+   "branch": "develop",
+   "filetypes":["kt","java"],
+   "charts":[],
+   "measurements":[]
+   }
+```
+## Usage
+Run `./gitHistoricalStats --project=abc` from the `bin` directory. It will run all the measurements and charts.
+Run `./gitHistoricalStats --project=abc --runAllMeasurements` to rerun all the measurements, even if they were already done.
+Run `./gitHistoricalStats --project=abc --rerunMeasurement=junit4imports` to rerun the measurement `junit4imports`, even if this was already done.
+
+
 ---
 ## Step 1
 
