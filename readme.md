@@ -28,8 +28,8 @@ You can see that in 2018 the app was rewritten in Kotlin and that a lot less cod
 
 ## Installation
 1. Download the latest release, and place it somewhere. `~/gitHistoricalStats` would be nice.
-2. Within the `bin` directory, create directories `repos` and `projects`.
-3. Do a new clone of your project to this repos directory. This is because this script will checkout all the important commits, and does some `git reset --hard HEAD` at the beginning and the end. You want to avoid running this script while there are uncommitted changes. 
+2. Within the `bin` directory, create directories `repos`,`projects`, and `output/charts`
+3. Do a new clone of your project to the `repos` directory. This is because this script will checkout all the important commits, and does some `git reset --hard HEAD` at the beginning and the end. You want to avoid running this script while there are uncommitted changes. 
 4. Add a `projects/myproject.config.json` with the following structure:
 ```
 {
@@ -45,6 +45,7 @@ Run `./gitHistoricalStats --project=abc` from the `bin` directory. It will run a
 Run `./gitHistoricalStats --project=abc --runAllMeasurements` to rerun all the measurements, even if they were already done.
 Run `./gitHistoricalStats --project=abc --rerunMeasurement=junit4imports` to rerun the measurement `junit4imports`, even if this was already done.
 
+If there are measurements and charts defined, the charts will be stored in the `output/charts` directory.
 
 ---
 ## Step 1
