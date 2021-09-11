@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "nl.nielsvanhove"
-version = "1.0.0-beta02"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
