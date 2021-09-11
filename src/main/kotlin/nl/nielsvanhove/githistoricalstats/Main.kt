@@ -11,16 +11,18 @@ import nl.nielsvanhove.githistoricalstats.measurements.MeasurementExecutor
 import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import nl.nielsvanhove.githistoricalstats.project.ProjectConfigReader
 import nl.nielsvanhove.githistoricalstats.project.ProjectDataReaderWriter
+import java.io.File
+import kotlin.system.exitProcess
 
 class Main {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            createFoldersIfNeeded()
 
             val arguments = ArgParser(args).parseInto(::ApplicationArgs)
             val projectConfig = ProjectConfigReader.read(arguments.project)
             projectConfig.validate()
-
 
             val commandExecutor = CommandExecutor(projectConfig)
             val gitWrapper = GitWrapper(projectConfig, commandExecutor)
@@ -34,8 +36,7 @@ class Main {
     }
 }
 
-
-fun generateCharts(projectConfig: ProjectConfig) {
+private fun generateCharts(projectConfig: ProjectConfig) {
     val projectData = ProjectDataReaderWriter.read(projectConfig.name)
 
     val chartGenerator = ChartGenerator(projectConfig, projectData)
@@ -45,7 +46,7 @@ fun generateCharts(projectConfig: ProjectConfig) {
     }
 }
 
-fun executeMeasurements(
+private fun executeMeasurements(
     projectConfig: ProjectConfig,
     commandExecutor: CommandExecutor,
     gitWrapper: GitWrapper,
@@ -68,7 +69,7 @@ fun executeMeasurements(
     }
 }
 
-fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
+private fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
 
     val commits = gitWrapper.log()
     val importantCommitFilter = ImportantCommitFilter(commits)
@@ -79,6 +80,10 @@ fun syncCommits(projectConfig: ProjectConfig, gitWrapper: GitWrapper) {
     ProjectDataReaderWriter.write(projectConfig.name, projectData)
 }
 
+private fun createFoldersIfNeeded() {
+    val folders = listOf("projects", "repos", "output")
+    folders.filter { !File(it).exists() }.forEach { File(it).mkdir() }
+}
 
 class ApplicationArgs(parser: ArgParser) {
 

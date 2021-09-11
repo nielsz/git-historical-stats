@@ -76,7 +76,7 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
 
         val renderer = ChartRenderer(chart = chart, data = data, dates = dates, colors = getColorsFor(chart.items))
         val plot = renderer.render()
-        ggsave(plot, "$id.png", path = "output/charts/" + projectConfig.name)
+        ggsave(plot, "$id.png", path = "output/" + projectConfig.name)
     }
 
     private fun getColorsFor(items: List<ChartStack>): List<String> {
