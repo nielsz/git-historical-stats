@@ -1,14 +1,19 @@
 package nl.nielsvanhove.githistoricalstats.charts
 
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import jetbrains.letsPlot.export.ggsave
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.nielsvanhove.githistoricalstats.model.Granularity
-import nl.nielsvanhove.githistoricalstats.model.Granularity.*
+import nl.nielsvanhove.githistoricalstats.model.Granularity.MONTH
+import nl.nielsvanhove.githistoricalstats.model.Granularity.MONTH12
+import nl.nielsvanhove.githistoricalstats.model.Granularity.QUARTER
+import nl.nielsvanhove.githistoricalstats.model.Granularity.QUARTER12
+import nl.nielsvanhove.githistoricalstats.model.Granularity.YEAR
 import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import nl.nielsvanhove.githistoricalstats.project.ProjectData
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 
 class ChartGenerator(private val projectConfig: ProjectConfig, private val projectData: ProjectData) {
 
@@ -31,25 +36,31 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
                 val isFirstCommit = commit["isFirstCommit"]!!.jsonPrimitive.toString().toBoolean()
                 val isLastCommit = commit["isLastCommit"]!!.jsonPrimitive.toString().toBoolean()
 
-                if (isFirstCommit || isLastCommit || (granularity == YEAR && isLastOfYear) || (granularity == QUARTER && isLastOfQuarter) || (granularity == MONTH && isLastOfMonth)) {
+                if (isFirstCommit || isLastCommit || (granularity == YEAR && isLastOfYear) || (granularity == QUARTER && isLastOfQuarter) || (granularity == QUARTER12 && isLastOfQuarter) || (granularity == MONTH && isLastOfMonth) || (granularity == MONTH12 && isLastOfMonth)) {
                     val date = OffsetDateTime.parse(commit["committerDate"]!!.jsonPrimitive.content)
                     returnValues.add(ChartRowData(date = date, data = commitMeasurementValues))
                 }
             }
         }
 
+        if (granularity == MONTH12 || granularity == QUARTER12) {
+            return returnValues.takeLast(12).toMutableList()
+        }
+
         return returnValues
     }
 
     fun generate(chart: Chart) {
-        generate(chart, YEAR)
-        generate(chart, QUARTER)
-        generate(chart, MONTH)
+        generate(chart, YEAR, 1)
+        generate(chart, QUARTER, 2)
+        generate(chart, QUARTER12, 3)
+        generate(chart, MONTH, 4)
+        generate(chart, MONTH12, 5)
     }
 
 
-    private fun generate(chart: Chart, granularity: Granularity) {
-        val id = chart.id + "_" + granularity.toString().toLowerCase()
+    private fun generate(chart: Chart, granularity: Granularity, offset: Int) {
+        val id = chart.id + "_" + offset + "_" + granularity.toString().lowercase(Locale.getDefault())
 
         val content = getContent(chart.items.flatMap { it.items }, granularity)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -83,7 +94,7 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
         val colors = mutableListOf<String>()
 
         val totalColors = items.flatMap { it.items }.size
-        if(totalColors <= baseColors.size) {
+        if (totalColors <= baseColors.size) {
             colors.addAll(baseColors.subList(0, totalColors))
         } else {
             items.forEachIndexed { index, chartStack ->
