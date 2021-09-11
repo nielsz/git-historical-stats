@@ -4,6 +4,7 @@ import jetbrains.letsPlot.Pos
 import jetbrains.letsPlot.Stat
 import jetbrains.letsPlot.geom.geomBar
 import jetbrains.letsPlot.intern.Plot
+import jetbrains.letsPlot.intern.Scale
 import jetbrains.letsPlot.label.labs
 import jetbrains.letsPlot.letsPlot
 import jetbrains.letsPlot.sampling.samplingNone
@@ -30,17 +31,25 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
             }
         }
 
+        return plot +
+                scaleFillManual(values = colors) +
+                addLegend() +
+                scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates) +
+                theme()
+    }
+
+    private fun addLegend(): Scale {
 
         val legend = chart.legend
         val legendLabels = legend?.items ?: chart.items.flatMap { it.items }
 
-        val legendName = legend?.title ?: " "
+        if(legendLabels.size <= 1) {
+            // no legend if there's only one items. just write a good enough title.
+            return scaleFillDiscrete(name = "")
+        }
 
-        return plot +
-                scaleFillManual(values = colors) +
-                scaleFillDiscrete(name= legendName, labels = legendLabels) +
-                scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates) +
-                theme()
+        val legendName = legend?.title ?: " "
+        return scaleFillDiscrete(name= legendName, labels = legendLabels)
     }
 
     private fun offsetForIndex(index: Int, size: Int): Double {
