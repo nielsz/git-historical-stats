@@ -77,7 +77,8 @@ object ProjectConfigReader {
         }
 
         val charts = mutableListOf<Chart>()
-        for (jsonElement in rootObject["charts"]!!.jsonArray) {
+        val chartsArray = rootObject["charts"]?.jsonArray ?: emptyList()
+        for (jsonElement in chartsArray) {
             val item = jsonElement.jsonObject
 
             val chartStacks = mutableListOf<ChartStack>()
