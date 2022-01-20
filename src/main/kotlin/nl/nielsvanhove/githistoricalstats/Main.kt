@@ -12,7 +12,7 @@ import nl.nielsvanhove.githistoricalstats.project.ProjectConfig
 import nl.nielsvanhove.githistoricalstats.project.ProjectConfigReader
 import nl.nielsvanhove.githistoricalstats.project.ProjectDataReaderWriter
 import java.io.File
-import kotlin.system.exitProcess
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementRequirementValidator
 
 class Main {
     companion object {
@@ -25,12 +25,16 @@ class Main {
             projectConfig.validate()
 
             val commandExecutor = CommandExecutor(projectConfig)
-            val gitWrapper = GitWrapper(projectConfig, commandExecutor)
 
+            MeasurementRequirementValidator(projectConfig, commandExecutor).validate()
+
+            val gitWrapper = GitWrapper(projectConfig, commandExecutor)
             gitWrapper.reset()
+
             syncCommits(projectConfig, gitWrapper)
             executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
             generateCharts(projectConfig)
+
             gitWrapper.reset()
         }
     }
