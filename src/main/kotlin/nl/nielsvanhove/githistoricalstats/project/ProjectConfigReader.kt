@@ -16,17 +16,19 @@ object ProjectConfigReader {
         val filename = "projects/$projectName.config.json"
 
         val rootObject = try {
-             Json.decodeFromString<JsonObject>(File(filename).readText())
-        } catch(ex: FileNotFoundException) {
+            Json.decodeFromString<JsonObject>(File(filename).readText())
+        } catch (ex: FileNotFoundException) {
             val absolutePath = File("").absolutePath
             System.err.println("Can't find project. Create $absolutePath/$filename in the projects folder.")
-            System.err.println("{\n" +
-                    "  \"repo\": \"My local path to the repository\",\n" +
-                    "  \"branch\": \"develop\",\n" +
-                    "  \"filetypes\":[\"kt\",\"java\"],\n" +
-                    "  \"charts\":[],\n" +
-                    "  \"measurements\":[]\n" +
-        "}")
+            System.err.println(
+                "{\n" +
+                        "  \"repo\": \"My local path to the repository\",\n" +
+                        "  \"branch\": \"develop\",\n" +
+                        "  \"filetypes\":[\"kt\",\"java\"],\n" +
+                        "  \"charts\":[],\n" +
+                        "  \"measurements\":[]\n" +
+                        "}"
+            )
             throw ex
         }
 
@@ -48,16 +50,25 @@ object ProjectConfigReader {
                         )
                     }
                     "grep" -> {
+                        val types = if (measurementJson.containsKey("filetypes")) {
+                            measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
+                        } else {
+                            emptyList()
+                        }
+
                         patterns.add(
                             GrepMeasurementConfig(
                                 key = measurementJson["key"]!!.jsonPrimitive.content,
+                                filetypes = types,
                                 pattern = measurementJson["pattern"]!!.jsonPrimitive.content,
                             )
                         )
                     }
                     "cloc" -> {
                         val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
-                        val folder = if (measurementJson.containsKey("folder") ) {measurementJson["folder"]!!.jsonPrimitive.content} else "."
+                        val folder = if (measurementJson.containsKey("folder")) {
+                            measurementJson["folder"]!!.jsonPrimitive.content
+                        } else "."
 
                         patterns.add(
                             ClocMeasurementConfig(
@@ -87,8 +98,12 @@ object ProjectConfigReader {
             }
 
             val legend = item["legend"] as JsonObject?
-            val chartLegend = if(legend != null) {
-                val legendTitle = if(legend.containsKey("title")) { (legend["title"] as JsonPrimitive).content } else { null}
+            val chartLegend = if (legend != null) {
+                val legendTitle = if (legend.containsKey("title")) {
+                    (legend["title"] as JsonPrimitive).content
+                } else {
+                    null
+                }
                 val legendItems = (legend["items"] as JsonArray).map { it.jsonPrimitive.content }
                 ChartLegend(title = legendTitle, items = legendItems)
             } else {
