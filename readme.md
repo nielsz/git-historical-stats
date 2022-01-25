@@ -100,8 +100,8 @@ example calculates the amount of Android Activities.
 
 ## Step 3
 
-Based on the measurements, it's possible to generate charts. For each chart, it will generate three charts: Yearly,
-Quarterly and Monthly. The output is always a bar chart. It can have multiple bars, and each bar can be a stacked bar as
+Based on the measurements, it's possible to generate charts. For each chart, it will generate five charts: Yearly,
+Quarterly, Monthly, last 12 quarters and last 12 months. The output is always a bar chart. It can have multiple bars, and each bar can be a stacked bar as
 well.
 
 Display the number of JUnit4 imports:
