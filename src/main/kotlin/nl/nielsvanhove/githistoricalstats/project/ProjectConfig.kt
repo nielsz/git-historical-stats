@@ -14,6 +14,10 @@ data class ProjectConfig(
     val charts: List<Chart>
 ) {
     fun validate() {
+        if(repo.toPath().startsWith("~")) {
+            throw RuntimeException("It's not possible to use relative paths. Use absolute path.")
+        }
+
         if(!Files.exists(repo.toPath())) {
             throw RuntimeException("Git repository doesn't exist on the local file system: $repo")
         }
