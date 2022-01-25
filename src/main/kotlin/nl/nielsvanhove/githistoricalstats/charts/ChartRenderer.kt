@@ -34,8 +34,7 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
         return plot +
                 scaleFillManual(values = colors) +
                 addLegend() +
-                scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates) +
-                theme()
+                scaleXDiscrete(breaks = (1..dates.size).toList(), labels = dates)
     }
 
     private fun addLegend(): Scale {

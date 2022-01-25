@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "nl.nielsvanhove"
-version = "1.0.0"
+version = "1.0.1"
 
 repositories {
     mavenCentral()
@@ -14,14 +14,14 @@ repositories {
 
 dependencies {
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.0.1")
-    implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.0.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.2.0")
 
 
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
 
 tasks.test {
