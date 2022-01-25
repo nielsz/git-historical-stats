@@ -10,7 +10,10 @@ class GrepExecutor(
     private val measurement: GrepMeasurementConfig
 ) {
     operator fun invoke(): Int {
-        val fileTypeIncludes = projectConfig.filetypes.joinToString(" ") { "--include=*.$it" }
+        val fileTypeIncludes = measurement.filetypes
+            .ifEmpty { projectConfig.filetypes }
+            .joinToString(" ") { "--include=*.$it" }
+
         val c = "grep --recursive " + fileTypeIncludes + " -i -e '" + measurement.pattern + "' . | wc -l"
         val command = listOf("bash", "-c") + listOf(c)
         val output = commandExecutor.execute(command).trim()
