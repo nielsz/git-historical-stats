@@ -33,7 +33,7 @@ You can see that in 2018 the app was rewritten in Kotlin and that a lot less cod
 4. Add a `projects/myproject.config.json` with the following structure:
 ```
 {
-   "repo": "~/gitHistoricalStats/repos/myproject",
+   "repo": "/Users/username/gitHistoricalStats/repos/myproject",
    "branch": "develop",
    "filetypes":["kt","java"],
    "charts":[],
@@ -41,9 +41,9 @@ You can see that in 2018 the app was rewritten in Kotlin and that a lot less cod
    }
 ```
 ## Usage
-Run `./gitHistoricalStats --project=myproject` from the `bin` directory. It will run all the measurements and charts.
-Run `./gitHistoricalStats --project=myproject --runAllMeasurements` to rerun all the measurements, even if they were already done.
-Run `./gitHistoricalStats --project=myproject --rerunMeasurement=junit4imports` to rerun the measurement `junit4imports`, even if this was already done.
+Run `./gitHistoricalStats --project=myproject` from the `bin` directory. It will run all the measurements and charts.<br/>
+Run `./gitHistoricalStats --project=myproject --runAllMeasurements` to rerun all the measurements, even if they were already done.<br/>
+Run `./gitHistoricalStats --project=myproject --rerunMeasurement=junit4imports` to rerun the measurement `junit4imports`, even if this was already done.<br/>
 
 If there are measurements and charts defined, the charts will be stored in the `output` directory.
 
