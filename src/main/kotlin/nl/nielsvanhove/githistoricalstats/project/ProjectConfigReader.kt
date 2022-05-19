@@ -39,9 +39,12 @@ object ProjectConfigReader {
         val patterns = mutableListOf<MeasurementConfig>()
         if (measurementsJson != null) {
             for (measurementJson in measurementsJson) {
-                val type = (measurementJson as JsonObject)["type"]!!.jsonPrimitive.content
+                assert((measurementJson as JsonObject)["type"] != null, "Missing `type` string field in measurement.")
+                assert(measurementJson["key"] != null, "Missing `key` string field in measurement.")
+                val type = measurementJson["type"]!!.jsonPrimitive.content
                 when (type) {
                     "bash" -> {
+                        assert(measurementJson["command"] != null, "Bash measurement needs a `command` string field.")
                         patterns.add(
                             BashMeasurementConfig(
                                 key = measurementJson["key"]!!.jsonPrimitive.content,
@@ -50,6 +53,7 @@ object ProjectConfigReader {
                         )
                     }
                     "grep" -> {
+                        assert(measurementJson["pattern"] != null, "Grep measurement needs a `pattern` string field.")
                         val types = if (measurementJson.containsKey("filetypes")) {
                             measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
                         } else {
@@ -65,6 +69,7 @@ object ProjectConfigReader {
                         )
                     }
                     "cloc" -> {
+                        assert(measurementJson["filetypes"] != null, "Cloc measurement needs a `filetypes` array field.")
                         val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
                         val folder = if (measurementJson.containsKey("folder")) {
                             measurementJson["folder"]!!.jsonPrimitive.content
@@ -91,9 +96,12 @@ object ProjectConfigReader {
         val chartsArray = rootObject["charts"]?.jsonArray ?: emptyList()
         for (jsonElement in chartsArray) {
             val item = jsonElement.jsonObject
+            assert(item["items"] != null, "An `items` array is needed to plot a chart.")
+            assert(item["items"] is JsonArray, "The `items` element needs to be an array. One item represents one bar.")
 
             val chartStacks = mutableListOf<ChartStack>()
             for (jsonElement in item["items"]!!.jsonArray) {
+                assert(jsonElement is JsonArray, "The `items` sub-element needs to be an array. One item represents one item in the stacked bar.")
                 chartStacks.add(ChartStack((jsonElement as JsonArray).map { it.jsonPrimitive.content }))
             }
 
@@ -127,5 +135,9 @@ object ProjectConfigReader {
             measurements = patterns,
             charts = charts
         )
+    }
+
+    private fun assert(assertion: Boolean, error: String) {
+        if (!assertion) throw IllegalArgumentException(error)
     }
 }

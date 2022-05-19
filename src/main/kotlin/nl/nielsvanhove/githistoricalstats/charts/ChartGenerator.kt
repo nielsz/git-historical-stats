@@ -26,6 +26,7 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
             val commitMeasurementValues = mutableMapOf<String, Int>()
             val measurements = (commit as JsonObject)["measurements"] as JsonObject
             for (s in list) {
+                if(!measurements.containsKey(s)) throw IllegalArgumentException("Measurement `$s` does not exist.")
                 commitMeasurementValues[s] = (measurements[s]!!.jsonPrimitive.content).toInt()
             }
 
