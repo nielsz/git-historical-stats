@@ -3,7 +3,7 @@ package nl.nielsvanhove.githistoricalstats.charts
 /**
  * A complete chart
  */
-data class Chart(val id: String, val title: String, val items: List<ChartStack>, val legend: ChartLegend? = null)
+data class Chart(val id: String, val items: List<ChartStack>, val title: String, val subtitle: String? = null, val caption: String? = null, val legend: ChartLegend? = null)
 
 /**
  * One bar of a chart, which can contains multiple stacked items, but normally just one item.
