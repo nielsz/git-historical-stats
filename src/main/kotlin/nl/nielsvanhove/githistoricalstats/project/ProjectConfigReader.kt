@@ -1,14 +1,22 @@
 package nl.nielsvanhove.githistoricalstats.project
 
+import java.io.File
+import java.io.FileNotFoundException
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import nl.nielsvanhove.githistoricalstats.charts.Chart
 import nl.nielsvanhove.githistoricalstats.charts.ChartLegend
 import nl.nielsvanhove.githistoricalstats.charts.ChartStack
 import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig
-import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.*
-import java.io.File
-import java.io.FileNotFoundException
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.BashMeasurementConfig
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.ClocMeasurementConfig
+import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.GrepMeasurementConfig
 
 object ProjectConfigReader {
 
@@ -69,7 +77,10 @@ object ProjectConfigReader {
                         )
                     }
                     "cloc" -> {
-                        assert(measurementJson["filetypes"] != null, "Cloc measurement needs a `filetypes` array field.")
+                        assert(
+                            measurementJson["filetypes"] != null,
+                            "Cloc measurement needs a `filetypes` array field."
+                        )
                         val filetypes = measurementJson["filetypes"]!!.jsonArray.map { it.jsonPrimitive.content }
                         val folder = if (measurementJson.containsKey("folder")) {
                             measurementJson["folder"]!!.jsonPrimitive.content
@@ -101,7 +112,10 @@ object ProjectConfigReader {
 
             val chartStacks = mutableListOf<ChartStack>()
             for (jsonElement in item["items"]!!.jsonArray) {
-                assert(jsonElement is JsonArray, "The `items` sub-element needs to be an array. One item represents one item in the stacked bar.")
+                assert(
+                    jsonElement is JsonArray,
+                    "The `items` sub-element needs to be an array. One item represents one item in the stacked bar."
+                )
                 chartStacks.add(ChartStack((jsonElement as JsonArray).map { it.jsonPrimitive.content }))
             }
 
@@ -120,9 +134,11 @@ object ProjectConfigReader {
 
             val chart = Chart(
                 id = item["id"]!!.jsonPrimitive.content,
-                title = item["title"]!!.jsonPrimitive.content,
                 items = chartStacks,
-                legend = chartLegend
+                legend = chartLegend,
+                title = item["title"]!!.jsonPrimitive.content,
+                subtitle = item["subtitle"]?.jsonPrimitive?.content,
+                caption = item["caption"]?.jsonPrimitive?.content,
             )
             charts.add(chart)
         }

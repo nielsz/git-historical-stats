@@ -11,7 +11,6 @@ import jetbrains.letsPlot.sampling.samplingNone
 import jetbrains.letsPlot.scale.scaleFillDiscrete
 import jetbrains.letsPlot.scale.scaleFillManual
 import jetbrains.letsPlot.scale.scaleXDiscrete
-import jetbrains.letsPlot.theme
 
 class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: List<String>, val colors: List<String>) {
 
@@ -21,7 +20,7 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
     fun render(): Plot {
 
         var plot = letsPlot() +
-                labs(x = "", y = "", title = chart.title)
+                labs(x = "", y = "", title = chart.title, subtitle = chart.subtitle, caption = chart.caption)
 
         data.forEachIndexed { index, chartBarData ->
             plot += geomBar(stat = Stat.identity, position = Pos.stack, width = barWidth, sampling = samplingNone) {
@@ -42,13 +41,13 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
         val legend = chart.legend
         val legendLabels = legend?.items ?: chart.items.flatMap { it.items }
 
-        if(legendLabels.size <= 1) {
+        if (legendLabels.size <= 1) {
             // no legend if there's only one items. just write a good enough title.
             return scaleFillDiscrete(name = "")
         }
 
         val legendName = legend?.title ?: " "
-        return scaleFillDiscrete(name= legendName, labels = legendLabels)
+        return scaleFillDiscrete(name = legendName, labels = legendLabels)
     }
 
     private fun offsetForIndex(index: Int, size: Int): Double {
