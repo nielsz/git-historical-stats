@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.20"
     application
 }
 
@@ -14,9 +14,9 @@ repositories {
 
 dependencies {
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.0")
-    implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.2.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.3.0")
 
 
     testImplementation(kotlin("test-junit5"))
