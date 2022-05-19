@@ -122,6 +122,8 @@ Display Junit4 vs Junit5 as two separate bars:
 {
     "id": "junit4_5",
     "title": "JUnit 4 vs Junit 5",
+    "subtitle": "Comparing the legacy vs new variants",
+    "caption": "By Nielsz",
     "items": [
       ["junit4imports"],
       ["junit5imports"]
