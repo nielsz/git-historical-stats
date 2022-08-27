@@ -62,7 +62,6 @@ class MeasurementExecutor(
                 val executor = ClocExecutor(projectConfig, commandExecutor, measurement)
                 executor()
             }
-            else -> throw RuntimeException("Unknown measurementConfig")
         }
     }
 
