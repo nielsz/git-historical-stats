@@ -1,16 +1,17 @@
 package nl.nielsvanhove.githistoricalstats.charts
 
-import jetbrains.letsPlot.Pos
-import jetbrains.letsPlot.Stat
-import jetbrains.letsPlot.geom.geomBar
-import jetbrains.letsPlot.intern.Plot
-import jetbrains.letsPlot.intern.Scale
-import jetbrains.letsPlot.label.labs
-import jetbrains.letsPlot.letsPlot
-import jetbrains.letsPlot.sampling.samplingNone
-import jetbrains.letsPlot.scale.scaleFillDiscrete
-import jetbrains.letsPlot.scale.scaleFillManual
-import jetbrains.letsPlot.scale.scaleXDiscrete
+import org.jetbrains.letsPlot.Pos
+import org.jetbrains.letsPlot.Stat
+import org.jetbrains.letsPlot.geom.geomBar
+import org.jetbrains.letsPlot.intern.Plot
+import org.jetbrains.letsPlot.intern.Scale
+import org.jetbrains.letsPlot.label.labs
+import org.jetbrains.letsPlot.letsPlot
+import org.jetbrains.letsPlot.pos.positionStack
+import org.jetbrains.letsPlot.sampling.samplingNone
+import org.jetbrains.letsPlot.scale.scaleFillDiscrete
+import org.jetbrains.letsPlot.scale.scaleFillManual
+import org.jetbrains.letsPlot.scale.scaleXDiscrete
 
 class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: List<String>, val colors: List<String>) {
 
@@ -23,7 +24,7 @@ class ChartRenderer(val chart: Chart, val data: List<ChartBarData>, val dates: L
                 labs(x = "", y = "", title = chart.title, subtitle = chart.subtitle, caption = chart.caption)
 
         data.forEachIndexed { index, chartBarData ->
-            plot += geomBar(stat = Stat.identity, position = Pos.stack, width = barWidth, sampling = samplingNone) {
+            plot += geomBar(stat = Stat.identity, position = positionStack, width = barWidth, sampling = samplingNone) {
                 x = chartBarData.offsets.map { it + offsetForIndex(index, data.size) }
                 y = chartBarData.allData
                 fill = chartBarData.labels

@@ -111,12 +111,12 @@ object ProjectConfigReader {
             assert(item["items"] is JsonArray, "The `items` element needs to be an array. One item represents one bar.")
 
             val chartStacks = mutableListOf<ChartStack>()
-            for (jsonElement in item["items"]!!.jsonArray) {
+            for (jsonBarElement in item["items"]!!.jsonArray) {
                 assert(
-                    jsonElement is JsonArray,
+                    jsonBarElement is JsonArray,
                     "The `items` sub-element needs to be an array. One item represents one item in the stacked bar."
                 )
-                chartStacks.add(ChartStack((jsonElement as JsonArray).map { it.jsonPrimitive.content }))
+                chartStacks.add(ChartStack((jsonBarElement as JsonArray).map { it.jsonPrimitive.content }))
             }
 
             val legend = item["legend"] as JsonObject?

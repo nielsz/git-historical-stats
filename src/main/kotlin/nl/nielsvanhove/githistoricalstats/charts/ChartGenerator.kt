@@ -3,7 +3,7 @@ package nl.nielsvanhove.githistoricalstats.charts
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import jetbrains.letsPlot.export.ggsave
+import org.jetbrains.letsPlot.export.ggsave
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.nielsvanhove.githistoricalstats.model.Granularity
