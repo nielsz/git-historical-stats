@@ -31,8 +31,8 @@ class Main {
             val gitWrapper = GitWrapper(projectConfig, commandExecutor)
             gitWrapper.reset()
 
-            syncCommits(projectConfig, gitWrapper)
-            executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
+            //syncCommits(projectConfig, gitWrapper)
+            //executeMeasurements(projectConfig, commandExecutor, gitWrapper, arguments)
             generateCharts(projectConfig)
 
             gitWrapper.reset()
@@ -59,7 +59,6 @@ private fun executeMeasurements(
     val projectData = ProjectDataReaderWriter.read(projectConfig.name)
     val measurementExecutor = MeasurementExecutor(projectConfig, commandExecutor, gitWrapper)
     for (commit in projectData.commits) {
-
 
         val updatedCommit =
             measurementExecutor.executeIfNeeded(

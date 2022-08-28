@@ -3,6 +3,7 @@ package nl.nielsvanhove.githistoricalstats.charts
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.max
 import org.jetbrains.letsPlot.export.ggsave
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -21,12 +22,13 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
      * Get all the content, in a parsable way, trimming the data on the front
      */
     private fun getContent(list: List<String>, granularity: Granularity): List<ChartRowData> {
+        println("getting content for $list")
         val returnValues = mutableListOf<ChartRowData>()
         for (commit in projectData.commits) {
             val commitMeasurementValues = mutableMapOf<String, Int>()
             val measurements = (commit as JsonObject)["measurements"] as JsonObject
             for (s in list) {
-                if(!measurements.containsKey(s)) throw IllegalArgumentException("Measurement `$s` does not exist.")
+                if (!measurements.containsKey(s)) throw IllegalArgumentException("Measurement `$s` does not exist.")
                 commitMeasurementValues[s] = (measurements[s]!!.jsonPrimitive.content).toInt()
             }
 
@@ -53,23 +55,61 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
 
     fun generate(chart: Chart) {
         generate(chart, YEAR, 1)
-        generate(chart, QUARTER, 2)
-        generate(chart, QUARTER12, 3)
-        generate(chart, MONTH, 4)
-        generate(chart, MONTH12, 5)
+        //generate(chart, QUARTER, 2)
+        //generate(chart, QUARTER12, 3)
+        //generate(chart, MONTH, 4)
+        //generate(chart, MONTH12, 5)
     }
 
-
     private fun generate(chart: Chart, granularity: Granularity, offset: Int) {
-        val id = chart.id + "_" + offset + "_" + granularity.toString().lowercase(Locale.getDefault())
+        val contentItems = (chart.barItems.flatMap { it.items } + chart.lineItems).distinct()
+        val content = getContent(contentItems, granularity)
 
-        val content = getContent(chart.items.flatMap { it.items }, granularity)
+        val barData = chartBarData(chart, content)
+        val lineData = chartLineData(chart, content)
+
+        val largestValue = lineData.maxOfOrNull { it.items.max() } ?: 0
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val dates = content.map { formatter.format(it.date) }
 
-        val data = mutableListOf<ChartBarData>()
+        val renderer = ChartRenderer(
+            chart = chart,
+            barData = barData,
+            lines = lineData,
+            dates = dates,
+            barColors = getBarColorsFor(barItems = chart.barItems),
+            lineColors = getLineColorsFor(lineItems = chart.lineItems.size),
+            largestValue = largestValue
+        )
+        val plot = renderer.render()
 
-        for (itemX in chart.items) {
+        val id = chart.id + "_" + offset + "_" + granularity.toString().lowercase(Locale.getDefault())
+
+        ggsave(plot, "$id.png", path = "output/" + projectConfig.name)
+    }
+
+    private fun chartLineData(
+        chart: Chart,
+        content: List<ChartRowData>
+    ): List<ChartLineData> {
+        val lineData = mutableListOf<ChartLineData>()
+        for (lineItem in chart.lineItems) {
+            val allData = mutableListOf<Int>()
+            for (chartRowData in content) {
+                val data = chartRowData.data[lineItem]!!
+                allData.add(data)
+            }
+            lineData.add(ChartLineData(items = allData))
+        }
+        return lineData
+    }
+
+    private fun chartBarData(
+        chart: Chart,
+        content: List<ChartRowData>
+    ): List<ChartBarData> {
+        val barData = mutableListOf<ChartBarData>()
+        for (itemX in chart.barItems) {
             val allData = mutableListOf<Int>()
             for (chartRowData in content) {
                 for (key in itemX.items) {
@@ -77,7 +117,7 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
                 }
             }
 
-            data.add(
+            barData.add(
                 ChartBarData(
                     offsets = generateOffsets(itemX.items.size, allData.size),
                     allData = allData,
@@ -85,20 +125,27 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
                 )
             )
         }
-
-        val renderer = ChartRenderer(chart = chart, data = data, dates = dates, colors = getColorsFor(chart.items))
-        val plot = renderer.render()
-        ggsave(plot, "$id.png", path = "output/" + projectConfig.name)
+        return barData
     }
 
-    private fun getColorsFor(items: List<ChartStack>): List<String> {
+    private fun getLineColorsFor(lineItems: Int): List<String> {
         val colors = mutableListOf<String>()
 
-        val totalColors = items.flatMap { it.items }.size
+        if (lineItems <= baseColors.size) {
+            colors.addAll(baseColors.subList(0, lineItems))
+        }
+
+        return colors
+    }
+
+    private fun getBarColorsFor(barItems: List<BarChartStack>): List<String> {
+        val colors = mutableListOf<String>()
+
+        val totalColors = barItems.flatMap { it.items }.size
         if (totalColors <= baseColors.size) {
             colors.addAll(baseColors.subList(0, totalColors))
         } else {
-            items.forEachIndexed { index, chartStack ->
+            barItems.forEachIndexed { index, chartStack ->
                 val source = if (index == 0) {
                     if (chartStack.items.size <= 3) {
                         redChartColorsSmall
@@ -115,8 +162,6 @@ class ChartGenerator(private val projectConfig: ProjectConfig, private val proje
                 colors.addAll(source.subList(0, chartStack.items.size))
             }
         }
-
-
 
         return colors
     }

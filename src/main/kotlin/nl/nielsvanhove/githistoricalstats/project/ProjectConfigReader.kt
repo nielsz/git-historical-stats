@@ -12,7 +12,8 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import nl.nielsvanhove.githistoricalstats.charts.Chart
 import nl.nielsvanhove.githistoricalstats.charts.ChartLegend
-import nl.nielsvanhove.githistoricalstats.charts.ChartStack
+import nl.nielsvanhove.githistoricalstats.charts.ChartLineData
+import nl.nielsvanhove.githistoricalstats.charts.BarChartStack
 import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig
 import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.BashMeasurementConfig
 import nl.nielsvanhove.githistoricalstats.measurements.MeasurementConfig.ClocMeasurementConfig
@@ -60,6 +61,7 @@ object ProjectConfigReader {
                             )
                         )
                     }
+
                     "grep" -> {
                         assert(measurementJson["pattern"] != null, "Grep measurement needs a `pattern` string field.")
                         val types = if (measurementJson.containsKey("filetypes")) {
@@ -76,6 +78,7 @@ object ProjectConfigReader {
                             )
                         )
                     }
+
                     "cloc" -> {
                         assert(
                             measurementJson["filetypes"] != null,
@@ -107,16 +110,30 @@ object ProjectConfigReader {
         val chartsArray = rootObject["charts"]?.jsonArray ?: emptyList()
         for (jsonElement in chartsArray) {
             val item = jsonElement.jsonObject
-            assert(item["items"] != null, "An `items` array is needed to plot a chart.")
-            assert(item["items"] is JsonArray, "The `items` element needs to be an array. One item represents one bar.")
+            //assert(item["items"] != null, "An `items` array is needed to plot a chart.")
+            //assert(item["items"] is JsonArray, "The `items` element needs to be an array. One item represents one bar.")
 
-            val chartStacks = mutableListOf<ChartStack>()
-            for (jsonBarElement in item["items"]!!.jsonArray) {
-                assert(
-                    jsonBarElement is JsonArray,
-                    "The `items` sub-element needs to be an array. One item represents one item in the stacked bar."
-                )
-                chartStacks.add(ChartStack((jsonBarElement as JsonArray).map { it.jsonPrimitive.content }))
+            val barchartStackBars = mutableListOf<BarChartStack>()
+            val linecharts = mutableListOf<String>()
+            if (item.containsKey("items")) {
+                for (jsonBarElement in item["items"]!!.jsonArray) {
+                    assert(
+                        jsonBarElement is JsonArray,
+                        "The `items` sub-element needs to be an array. One item represents one item in the stacked bar."
+                    )
+                    barchartStackBars.add(BarChartStack((jsonBarElement as JsonArray).map { it.jsonPrimitive.content }))
+                }
+            }
+
+            if (item.containsKey("lines")) {
+                for (jsonLineElement in item["lines"]!!.jsonArray) {
+                    assert(
+                        jsonLineElement is JsonPrimitive,
+                        "The `line` sub-element needs to be a single array of strings. One item represents one line"
+                    )
+
+                    linecharts.add((jsonLineElement as JsonPrimitive).content)
+                }
             }
 
             val legend = item["legend"] as JsonObject?
@@ -134,7 +151,8 @@ object ProjectConfigReader {
 
             val chart = Chart(
                 id = item["id"]!!.jsonPrimitive.content,
-                items = chartStacks,
+                barItems = barchartStackBars,
+                lineItems = linecharts,
                 legend = chartLegend,
                 title = item["title"]!!.jsonPrimitive.content,
                 subtitle = item["subtitle"]?.jsonPrimitive?.content,
@@ -147,7 +165,7 @@ object ProjectConfigReader {
             name = projectName,
             repo = File(repo),
             branch = branch,
-            filetypes,
+            filetypes = filetypes,
             measurements = patterns,
             charts = charts
         )
