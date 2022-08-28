@@ -22,7 +22,6 @@ object ProjectConfigReader {
 
     fun read(projectName: String): ProjectConfig {
         val filename = "projects/$projectName.config.json"
-
         val rootObject = try {
             Json.decodeFromString<JsonObject>(File(filename).readText())
         } catch (ex: FileNotFoundException) {
