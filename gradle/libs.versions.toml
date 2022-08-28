@@ -1,0 +1,14 @@
+[versions]
+argParser = "2.0.7"
+serialization = "1.4.0"
+letsplotJvm = "4.0.0"
+letsplotExport = "2.4.0"
+junit = "5.9.0"
+
+[libraries]
+argParser = { module = "com.xenomachina:kotlin-argparser", version.ref = "argParser"}
+serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+letsplot-jvm = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", version.ref = "letsplotJvm"}
+letsplot-export = { module = "org.jetbrains.lets-plot:lets-plot-image-export", version.ref = "letsplotExport"}
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit"}
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit"}

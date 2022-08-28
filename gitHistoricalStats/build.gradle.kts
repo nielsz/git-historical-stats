@@ -13,14 +13,14 @@ repositories {
 }
 
 dependencies {
-    implementation("com.xenomachina:kotlin-argparser:2.0.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:4.0.0")
-    implementation("org.jetbrains.lets-plot:lets-plot-image-export:2.4.0")
+    implementation(libs.argParser)
+    implementation(libs.serialization)
+    implementation(libs.letsplot.jvm)
+    implementation(libs.letsplot.export)
 
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
 }
 
 tasks.test {
@@ -30,7 +30,7 @@ tasks.test {
     }
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
 
